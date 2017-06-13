@@ -1,0 +1,80 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:cal="clr-namespace:Caliburn.Micro;assembly=Caliburn.Micro.Platform"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+        xmlns:View="clr-namespace:FrameExtractor.View" 
+        x:Class="FrameExtractor.ShellView"
+        xmlns:local="clr-namespace:FrameExtractor"
+        ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Width="960" Height="600">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="700"/>
+            <ColumnDefinition Width="260"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Column="1" Grid.RowSpan="2">
+            <StackPanel Orientation="Horizontal" >
+                <Label Width="80" Content="Width" Margin="0,10,10,10"/>
+                <TextBox MinWidth="100" Text="{Binding PixelWidth}" ToolTip="Only the width of the rectangle and not from the actual image" cal:Message.Attach="[Event TextChanged] = [PixelWidthChanged($source)]" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10" Width="130"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" >
+                <Label Width="80" Content="Height" Margin="0,10,10,10"/>
+                <TextBox MinWidth="100" Text="{Binding PixelHeight}" ToolTip="Only the Height of the rectangle and not from the actual image" cal:Message.Attach="[Event TextChanged] = [PixelHeightChanged($source)]" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10" Width="130"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" >
+                <Label Width="80" Content="Frame offset" Margin="0,10,10,10"/>
+                <TextBox MinWidth="100" Text="{Binding FrameOffset}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10" Width="130"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" >
+                <Label Width="80" Content="Size nxn" Margin="0,10,10,10"/>
+                <TextBox MinWidth="100" Text="{Binding SizeNxN}" ToolTip="Sets the size N of an NxN image. 0 to disable resizing" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10" Width="130"/>
+            </StackPanel>
+            <StackPanel  Margin="0,20,0,0" HorizontalAlignment="Left">
+                <Button x:Name="ChooseVideo" Width="100" Content="Choose video" Margin="0,10,10,10"/>
+                <TextBox TextWrapping="Wrap" Text="{Binding PathLoad}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="20,10,10,10" IsEnabled="False" Width="180" Height="40"/>
+            </StackPanel>
+            <StackPanel HorizontalAlignment="Left">
+                <Button x:Name="ChooseFolder" Width="100" Content="Choose folder" Margin="0,10,10,10"/>
+                <TextBox TextWrapping="Wrap" Text="{Binding PathSave}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="20,10,10,10" IsEnabled="False" Width="180" Height="40"/>
+            </StackPanel>
+            <TextBox TextWrapping="Wrap" Width="238" Height="75" Text="{Binding InfoText}" IsEnabled="False"/>
+        </StackPanel>
+        <Canvas x:Name="ImagePlane" Background="{Binding CanvasIMG}" Grid.RowSpan="2" cal:Message.Attach="[Event MouseDown] = [MouseDown($source, $eventArgs)]; [Event MouseUp] = [MouseUp($source, $eventArgs)]; [Event MouseMove] = [MouseMove($source, $eventArgs)]; [Event MouseWheel] = [MouseWheel($source, $eventArgs)]"  Width="680" Height="460">
+            <Rectangle Fill="LightBlue" Canvas.Left="{Binding RectLeft}" Canvas.Top="{Binding RectTop}" Width="{Binding RectWidth}" Height="{Binding RectHeight}" Opacity="0.3" />
+        </Canvas>
+        <Slider Grid.Row="2" x:Name="FrameSlider"  HorizontalAlignment="Center" Minimum="0" Maximum="{Binding SliderMax}" Value="0" cal:Message.Attach="[Event PreviewMouseUp] = [SliderValueChanged($source, $eventArgs)]" ToolTip="Only use is to scroll in the video" Width="670" Margin="0,10,0,0"/>
+       
+        <StackPanel Grid.Row="2" Grid.Column="2">
+            <Button x:Name="SaveFrames"  Content="Save frames" Width="100"/>
+            <ProgressBar x:Name="SaveProgress" Minimum="0" Maximum="100" Value="{Binding Progress}" Height="10" Margin="3" />
+        </StackPanel>
+        <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal">
+            <Label Width="180"  Content="Parameters to remove distortion:"/>
+            <TextBox  Text="{Binding Parameters}" VerticalAlignment="Center" Margin="5" Width="660">
+                <TextBox.ToolTip>
+                    <TextBlock>
+                        camera matrix [fx 0 cx; 0 fy cy; 0 0 1]
+                        <LineBreak/>
+                        distortion coefficients [k1, k2, k3, k4, k5]
+                        <LineBreak/>
+                        The input must have to following form:
+                        <LineBreak/>
+                        fx, cx, fy, cy; k1, k2, k3, k4, k5
+                        <LineBreak/>
+                        For example:
+                        <LineBreak/>
+                        8.41213e+02, 640, 8.412163e+02, 480; -3.9667825864183698e-01, 1.29744e-01, 0, 0, -1.5849713e-02
+                    </TextBlock>
+                </TextBox.ToolTip>
+            </TextBox>
+            <Button x:Name="ApplyParams" Content="Apply parameters"/>
+        </StackPanel>
+    </Grid>
+</Window>
