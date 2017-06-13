@@ -5,7 +5,8 @@
         xmlns:View="clr-namespace:FrameExtractor.View" 
         x:Class="FrameExtractor.ShellView"
         xmlns:local="clr-namespace:FrameExtractor"
-        ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Width="960" Height="600">
+		Title="FrameExtractor"
+        ResizeMode="NoResize" WindowStartupLocation="CenterScreen" Width="970" Height="610">
 
     <Grid>
         <Grid.ColumnDefinitions>
